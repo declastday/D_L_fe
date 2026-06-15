@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
  * 로그인 페이지 컴포넌트
  * - 학번, 비밀번호 입력 폼
  * - 필수 필드 유효성 검사 및 로그인 실패 에러 메시지
+ * - 로그인 성공 후 navigate는 AuthLayout이 isAuthenticated 감지 시 처리
  */
 export function Login() {
   const navigate = useNavigate();
@@ -61,7 +62,6 @@ export function Login() {
 
     try {
       await login(parseInt(studentId, 10), password);
-      navigate("/");
     } catch {
       setLoginError(true);
     } finally {

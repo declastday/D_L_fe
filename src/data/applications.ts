@@ -5,7 +5,7 @@ export interface Application {
   clubName: string;
   clubImage: string;
   category: string;
-  status: "pending" | "accepted" | "rejected";
+  status: "pending" | "accepted" | "rejected" | "held";
   rawStatus?: string;
   appliedDate: string;
   message: string;
@@ -44,5 +44,16 @@ export const MOCK_APPLICATIONS: Application[] = [
     status: "rejected",
     appliedDate: "2025.09.25",
     message: "지원해주셔서 감사합니다. 아쉽게도 이번 모집에서는 함께하지 못하게 되었습니다. 귀하의 앞날에 무궁한 발전이 있기를 기원합니다.",
+  },
+  {
+    id: "4",
+    studentId: 20240001,
+    clubId: "2",
+    clubName: "디지털 아트 크리에이터",
+    clubImage: "https://placehold.co/160x160/e2e8f0/1e293b?text=Art",
+    category: "문화예술",
+    status: "held",
+    appliedDate: "2025.09.20",
+    message: "지원서를 검토한 결과, 추가 확인이 필요하여 현재 보류 상태입니다. 결과가 확정되면 별도로 안내드리겠습니다.",
   },
 ];

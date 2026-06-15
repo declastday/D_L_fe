@@ -1,6 +1,27 @@
+import {
+  Plus,
+  Laptop,
+  Palette,
+  Music,
+  BookOpen,
+  Trophy,
+  Utensils,
+  Camera,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Calendar } from "lucide-react";
-import { MoreLink } from "@/components/common/MoreLink";
+import { cn } from "@/lib/utils";
+
+/**
+ * 뉴스 카테고리별 뱃지 색상
+ */
+const NEWS_BADGE_CLASS: Record<string, string> = {
+  공지사항: "bg-blue-100 text-blue-700",
+  행사: "bg-violet-100 text-violet-700",
+  공연: "bg-rose-100 text-rose-700",
+  모집공고: "bg-orange-100 text-orange-700",
+  뉴스: "bg-emerald-100 text-emerald-700",
+  안내: "bg-gray-100 text-gray-600",
+};
 
 /**
  * 뉴스 아이템 데이터 인터페이스
@@ -65,106 +86,97 @@ const NEWS_ITEMS: NewsItem[] = [
 ];
 
 /**
+ * 인기 태그 데이터 및 아이콘
+ */
+const TAGS = [
+  { name: "프로그래밍", count: 15, icon: Laptop },
+  { name: "디자인", count: 12, icon: Palette },
+  { name: "음악", count: 18, icon: Music },
+  { name: "독서토론", count: 9, icon: BookOpen },
+  { name: "운동", count: 22, icon: Trophy },
+  { name: "요리", count: 8, icon: Utensils },
+  { name: "사진", count: 14, icon: Camera },
+  { name: "영상편집", count: 10, icon: Camera },
+  { name: "웹개발", count: 16, icon: Laptop },
+  { name: "댄스", count: 17, icon: Music },
+];
+
+/**
  * 뉴스 섹션 컴포넌트
- * - 동아리 관련 최신 뉴스 및 공지사항을 그리드 형태로 노출합니다.
- * - 첫 번째 아이템은 크게 강조하고, 나머지는 리스트 형태로 보여줍니다.
+ * - 상단: 동아리 뉴스 제목 리스트
+ * - 하단: 인기 태그 모음
  */
 export function NewsSection() {
-  const [mainNews, ...otherNews] = NEWS_ITEMS;
-
-  if (!mainNews) {
+  if (NEWS_ITEMS.length === 0) {
     return null;
   }
 
   return (
-    <div className="flex flex-col gap-8 sm:gap-12 w-full mx-auto">
-      {/* 섹션 헤더: 제목 및 전체보기 링크 */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="space-y-1">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">동아리 뉴스</h2>
+    <div className="flex flex-col gap-10 sm:gap-12">
+      {/* 상단: 동아리 뉴스 */}
+      <div className="flex w-full flex-col gap-6 sm:gap-8">
+        {/* 섹션 헤더 */}
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-extrabold text-gray-900 sm:text-3xl">동아리 뉴스</h2>
+          <button
+            type="button"
+            aria-label="뉴스 전체보기"
+            className="flex size-8 shrink-0 items-center justify-center text-gray-900 transition-colors hover:text-gray-500"
+          >
+            <Plus className="size-6" />
+          </button>
         </div>
-        <MoreLink>전체보기</MoreLink>
+
+        {/* 뉴스 제목 리스트 */}
+        <ul className="flex flex-col">
+          {NEWS_ITEMS.map((item, index) => (
+            <li
+              key={item.id}
+              className={cn(index !== NEWS_ITEMS.length - 1 && "border-b border-gray-100")}
+            >
+              <button
+                type="button"
+                className="group flex w-full items-center justify-between gap-4 py-4 text-left"
+              >
+                <span className="flex min-w-0 items-center gap-2.5">
+                  <Badge
+                    className={cn(
+                      "shrink-0 border-0 px-2 py-0.5 text-xs font-bold",
+                      NEWS_BADGE_CLASS[item.category] ?? "bg-gray-100 text-gray-600",
+                    )}
+                  >
+                    {item.category}
+                  </Badge>
+                  <span className="line-clamp-1 text-gray-700 transition-colors group-hover:text-primary">
+                    {item.title}
+                  </span>
+                </span>
+                <span className="shrink-0 text-sm text-gray-400">{item.date}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      {/* 뉴스 콘텐츠 그리드 레이아웃 */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        {/* 메인 뉴스 (가장 최신 항목 강조) */}
-        <div
-          className="group cursor-pointer space-y-4 lg:col-span-2"
-          role="button"
-          tabIndex={0}
-          onKeyDown={() => {}}
-        >
-          <div className="overflow-hidden rounded-xl border bg-gray-100 aspect-video relative">
-            <img
-              src={mainNews.imageUrl}
-              alt={mainNews.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-4 left-4">
-              <Badge className="bg-white/90 text-primary border-0 backdrop-blur-sm shadow-sm">
-                {mainNews.category}
-              </Badge>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 text-sm text-gray-500">
-              <span className="flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5" />
-                {mainNews.date}
-              </span>
-              <span className="flex items-center gap-1">
-                <MessageSquare className="h-3.5 w-3.5" />
-                {mainNews.comments}
-              </span>
-            </div>
-            <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
-              {mainNews.title}
-            </h3>
-            <p className="text-gray-600 line-clamp-2">{mainNews.description}</p>
-          </div>
+      {/* 하단: 인기 태그 */}
+      <div className="flex w-full flex-col gap-6 sm:gap-8">
+        {/* 섹션 헤더 */}
+        <div className="flex items-center">
+          <h2 className="text-2xl font-extrabold text-gray-900 sm:text-3xl">태그</h2>
         </div>
 
-        {/* 서브 뉴스 리스트 */}
-        <div className="flex flex-col gap-6 lg:col-span-3">
-          {otherNews.map((item) => (
-            <div
-              key={item.id}
-              className="group flex gap-3 sm:gap-4 cursor-pointer"
-              role="button"
-              tabIndex={0}
-              onKeyDown={() => {}}
+        {/* 태그 칩 */}
+        <div className="flex flex-wrap gap-2.5">
+          {TAGS.map((tag) => (
+            <button
+              key={tag.name}
+              type="button"
+              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3.5 py-2 shadow-sm transition-all hover:border-gray-300 hover:shadow-md"
             >
-              <div className="w-24 h-20 sm:w-32 sm:h-24 shrink-0 rounded-lg overflow-hidden bg-gray-100 relative">
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex flex-col justify-between py-1 grow min-w-0">
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="secondary"
-                      className="text-xs bg-gray-100 text-gray-600 border-0"
-                    >
-                      {item.category}
-                    </Badge>
-                    <span className="text-xs text-gray-400">{item.date}</span>
-                  </div>
-                  <h4 className="font-bold text-gray-900 group-hover:text-primary transition-colors line-clamp-2">
-                    {item.title}
-                  </h4>
-                </div>
-                <div className="flex items-center gap-3 text-xs text-gray-400">
-                  <span className="flex items-center gap-1">
-                    <MessageSquare className="h-3 w-3" />
-                    댓글 {item.comments}
-                  </span>
-                </div>
-              </div>
-            </div>
+              <tag.icon className="size-4 text-gray-500" />
+              <span className="text-sm font-medium text-gray-700">{tag.name}</span>
+              <span className="text-xs text-gray-400">{tag.count}</span>
+            </button>
           ))}
         </div>
       </div>
